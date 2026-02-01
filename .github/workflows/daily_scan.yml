@@ -1,0 +1,32 @@
+name: Daily Government Job Scraper
+
+on:
+  schedule:
+    # Runs at 04:30 UTC (which is 10:00 AM India time)
+    - cron: '30 4 * * *'
+  workflow_dispatch: # Allows you to run it manually anytime
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install libraries
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Scraper
+        run: python mega_scraper.py
+
+      - name: Upload CSV Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-results
+          path: Govt_MPH_Jobs_*.csv
